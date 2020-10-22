@@ -11,6 +11,7 @@ import com.rng.apirng.services.CategoriaService;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/categorias")
@@ -19,9 +20,13 @@ public class CategoriaResource {
 	@Autowired
 	private CategoriaService categoriaService;
 
+	@GetMapping
+	public ResponseEntity<List<Categoria>> buscarTodos(){
+		return ResponseEntity.ok(categoriaService.buscarTodos());
+	}
+
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<Categoria> buscarPorId(@PathVariable Long id) {
-
 		return ResponseEntity.ok(categoriaService.buscarPorId(id));
 	}
 
@@ -39,6 +44,13 @@ public class CategoriaResource {
 	public ResponseEntity<?> alterar(@PathVariable Long id, @RequestBody Categoria categoria){
 		categoriaService.alterar(id, categoria);
 
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping(path = "/{id}")
+	public ResponseEntity<?> deletar(@PathVariable Long id){
+
+		categoriaService.deletar(id);
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -1,8 +1,11 @@
 package com.rng.apirng.services;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.rng.apirng.services.exception.DataIntegrityException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,11 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 
+
+	public List<Categoria> buscarTodos(){
+		return categoriaRepository.findAll();
+	}
+
 	public Categoria buscarPorId(Long id) {
 
     	Optional<Categoria> categoria = categoriaRepository.findById(id);
@@ -28,10 +36,19 @@ public class CategoriaService {
 		categoriaRepository.save(categoria);
 	}
 
-	public Categoria alterar(Long id, Categoria novaCategoria){
+	public Categoria alterar(Long id, Categoria novaCategoria) {
 		Optional<Categoria> velhaCategoria = categoriaRepository.findById(id);
 
 		novaCategoria.setId(velhaCategoria.get().getId());
 		return categoriaRepository.save(novaCategoria);
+	}
+
+	public void deletar(Long id){
+		try{
+			categoriaRepository.deleteById(id);
+		}
+		catch(DataIntegrityViolationException e){
+			throw new DataIntegrityException("Não é pissível excluir uma categoria que nao possui Produtos");
+		}
 	}
 }
