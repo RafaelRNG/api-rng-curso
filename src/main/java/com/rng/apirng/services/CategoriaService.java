@@ -27,4 +27,11 @@ public class CategoriaService {
 
 		categoriaRepository.save(categoria);
 	}
+
+	public Categoria alterar(Long id, Categoria novaCategoria){
+		Optional<Categoria> velhaCategoria = categoriaRepository.findById(id);
+
+		novaCategoria.setId(velhaCategoria.get().getId());
+		return categoriaRepository.save(novaCategoria);
+	}
 }

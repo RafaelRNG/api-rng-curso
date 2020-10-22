@@ -27,8 +27,18 @@ public class CategoriaResource {
 
 	@PostMapping
 	public ResponseEntity<?> salvar(@RequestBody Categoria categoria){
-		categoriaService.salvar(categoria);
+		if(categoria.getNome() == null){
+			return ResponseEntity.badRequest().build();
+		}
 
+		categoriaService.salvar(categoria);
 		return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId()).toUri()).build();
+	}
+
+	@PutMapping(path = "/{id}")
+	public ResponseEntity<?> alterar(@PathVariable Long id, @RequestBody Categoria categoria){
+		categoriaService.alterar(id, categoria);
+
+		return ResponseEntity.noContent().build();
 	}
 }
