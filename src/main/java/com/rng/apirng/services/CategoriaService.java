@@ -3,6 +3,7 @@ package com.rng.apirng.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.rng.apirng.domain.Categoria;
@@ -20,5 +21,10 @@ public class CategoriaService {
     	Optional<Categoria> categoria = categoriaRepository.findById(id);
 
     	return categoria.orElseThrow(() -> new ObjectNotFoundException("Objeto nao encontrado! Id: " + id));
+	}
+
+	public void salvar(Categoria categoria){
+
+		categoriaRepository.save(categoria);
 	}
 }
