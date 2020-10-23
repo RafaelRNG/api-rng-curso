@@ -1,5 +1,6 @@
 package com.rng.apirng.resources;
 
+import com.rng.apirng.dto.CategoriaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/categorias")
@@ -21,8 +23,11 @@ public class CategoriaResource {
 	private CategoriaService categoriaService;
 
 	@GetMapping
-	public ResponseEntity<List<Categoria>> buscarTodos(){
-		return ResponseEntity.ok(categoriaService.buscarTodos());
+	public ResponseEntity<List<CategoriaDTO>> buscarTodos(){
+		List<Categoria> categorias = categoriaService.buscarTodos();
+		List<CategoriaDTO> categoriaDTOS = categorias.stream().map(categoria -> new CategoriaDTO(categoria)).collect(Collectors.toList());
+
+		return ResponseEntity.ok(categoriaDTOS);
 	}
 
 	@GetMapping(path = "/{id}")
