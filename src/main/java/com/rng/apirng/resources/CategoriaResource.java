@@ -2,6 +2,7 @@ package com.rng.apirng.resources;
 
 import com.rng.apirng.dto.CategoriaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,20 @@ public class CategoriaResource {
 	public ResponseEntity<List<CategoriaDTO>> buscarTodos(){
 		List<Categoria> categorias = categoriaService.buscarTodos();
 		List<CategoriaDTO> categoriaDTOS = categorias.stream().map(categoria -> new CategoriaDTO(categoria)).collect(Collectors.toList());
+
+		return ResponseEntity.ok(categoriaDTOS);
+	}
+
+	@GetMapping(path = "/page")
+	public ResponseEntity<Page<CategoriaDTO>> buscarTodosComPaginacao(
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
+			@RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
+			@RequestParam(value = "direction", defaultValue = "ASC") String direction
+			){
+
+		Page<Categoria> categorias = categoriaService.buscarTodosComPaginacao(page, linesPerPage, orderBy,direction);
+		Page<CategoriaDTO> categoriaDTOS = categorias.map(categoria -> new CategoriaDTO(categoria));
 
 		return ResponseEntity.ok(categoriaDTOS);
 	}
