@@ -12,6 +12,7 @@ import com.rng.apirng.domain.Categoria;
 import com.rng.apirng.services.CategoriaService;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,22 +47,24 @@ public class CategoriaResource {
 	}
 
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<Categoria> buscarPorId(@PathVariable Long id) {
-		return ResponseEntity.ok(categoriaService.buscarPorId(id));
+	public ResponseEntity<CategoriaDTO> buscarPorId(@PathVariable Long id) {
+		Categoria categoria = categoriaService.buscarPorId(id);
+		CategoriaDTO categoriaDTO = new CategoriaDTO(categoria);
+
+		return ResponseEntity.ok(categoriaDTO);
 	}
 
 	@PostMapping
-	public ResponseEntity<?> salvar(@RequestBody Categoria categoria){
-		if(categoria.getNome() == null){
-			return ResponseEntity.badRequest().build();
-		}
+	public ResponseEntity<?> salvar(@Valid @RequestBody CategoriaDTO categoriaDTO){
+		Categoria categoria = categoriaService.fromDTO(categoriaDTO);
 
 		categoriaService.salvar(categoria);
 		return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId()).toUri()).build();
 	}
 
 	@PutMapping(path = "/{id}")
-	public ResponseEntity<?> alterar(@PathVariable Long id, @RequestBody Categoria categoria){
+	public ResponseEntity<?> alterar(@PathVariable Long id, @Valid @RequestBody CategoriaDTO categoriaDTO){
+		Categoria categoria = categoriaService.fromDTO(categoriaDTO);
 		categoriaService.alterar(id, categoria);
 
 		return ResponseEntity.noContent().build();

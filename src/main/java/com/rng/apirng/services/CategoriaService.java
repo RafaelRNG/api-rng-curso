@@ -3,6 +3,7 @@ package com.rng.apirng.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.rng.apirng.dto.CategoriaDTO;
 import com.rng.apirng.services.exception.DataIntegrityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -29,6 +30,7 @@ public class CategoriaService {
 	public Page<Categoria> buscarTodosComPaginacao(Integer page, Integer linesPerPage, String orderBy, String direction){
 
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+
 		return categoriaRepository.findAll(pageRequest);
 	}
 
@@ -42,6 +44,10 @@ public class CategoriaService {
 	public void salvar(Categoria categoria){
 
 		categoriaRepository.save(categoria);
+	}
+
+	public Categoria fromDTO(CategoriaDTO categoriaDTO){
+		return new Categoria(categoriaDTO.getId(), categoriaDTO.getNome());
 	}
 
 	public Categoria alterar(Long id, Categoria novaCategoria) {

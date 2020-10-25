@@ -23,7 +23,6 @@ public class Categoria implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 125)
     private String nome;
 
     @ManyToMany(mappedBy = "categorias")
