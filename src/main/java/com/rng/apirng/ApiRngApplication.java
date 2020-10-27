@@ -78,6 +78,8 @@ public class ApiRngApplication implements CommandLineRunner {
 		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377",  TipoCliente.PESSOAFISICA);
 		cli1.setTelefones(Arrays.asList("27363323", "93838393"));
 
+		Cliente cli2 = new Cliente(null, "Rafael Neves Gomila", "rafael@hotmail.com", "345345353534534", TipoCliente.PESSOAFISICA);
+
 		Endereco e1 = new Endereco(null, "rua Flores", "300", "apto 203", "jardim", "38220834", cli1, c1);
 		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "sala 800", "Centro", "38777012", cli1, c2);
 
@@ -111,7 +113,7 @@ public class ApiRngApplication implements CommandLineRunner {
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
-		clienteRepository.saveAll(Arrays.asList(cli1));
+		clienteRepository.saveAll(Arrays.asList(cli1, cli2));
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
