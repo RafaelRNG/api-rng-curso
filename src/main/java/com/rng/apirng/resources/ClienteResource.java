@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -43,7 +44,7 @@ public class ClienteResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> alterar(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO){
+    public ResponseEntity<?> alterar(@PathVariable Long id, @Valid @RequestBody ClienteDTO clienteDTO){
         Cliente cliente = clienteService.fromDTO(id, clienteDTO);
 
         clienteService.alterar(id, cliente);
