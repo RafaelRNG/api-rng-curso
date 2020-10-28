@@ -2,6 +2,7 @@ package com.rng.apirng.resources;
 
 import com.rng.apirng.domain.Cliente;
 import com.rng.apirng.dto.ClienteDTO;
+import com.rng.apirng.dto.ClienteNewDTO;
 import com.rng.apirng.services.ClienteService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -43,6 +45,14 @@ public class ClienteResource {
         return ResponseEntity.ok(clienteService.buscarPorId(id));
     }
 
+    @PostMapping
+    public ResponseEntity<?> salvar(@RequestBody ClienteNewDTO clienteNewDTO){
+        Cliente cliente = clienteService.fromDTO(clienteNewDTO);
+        clienteService.salvar(cliente);
+
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId()).toUri()).build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> alterar(@PathVariable Long id, @Valid @RequestBody ClienteDTO clienteDTO){
         Cliente cliente = clienteService.fromDTO(id, clienteDTO);
@@ -51,13 +61,6 @@ public class ClienteResource {
 
         return ResponseEntity.noContent().build();
     }
-
-//    @PutMapping(path = "/{id}")
-//    public ResponseEntity<?> alterar(Long id, Cliente cliente){
-//        clienteService.alterar(id, cliente);
-//
-//        return ResponseEntity.noContent().build();
-//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletar(@PathVariable Long id){
