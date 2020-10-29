@@ -46,7 +46,7 @@ public class ClienteResource {
     }
 
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody ClienteNewDTO clienteNewDTO){
+    public ResponseEntity<?> salvar(@Valid @RequestBody ClienteNewDTO clienteNewDTO){
         Cliente cliente = clienteService.fromDTO(clienteNewDTO);
         clienteService.salvar(cliente);
 
