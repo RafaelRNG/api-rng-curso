@@ -58,9 +58,9 @@ public class ClienteService {
     }
 
     @Transactional
-    public void salvar(Cliente cliente){
+    public Cliente salvar(Cliente cliente){
         enderecoRepository.saveAll(cliente.getEnderecos());
-        clienteRepository.save(cliente);
+        return clienteRepository.save(cliente);
     }
 
     public Cliente alterar(Long id, Cliente novoCliente){
