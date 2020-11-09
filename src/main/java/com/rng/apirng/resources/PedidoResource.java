@@ -4,10 +4,10 @@ import com.rng.apirng.domain.Pedido;
 import com.rng.apirng.services.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping(path = "/pedidos")
@@ -20,5 +20,12 @@ public class PedidoResource {
     public ResponseEntity<Pedido> buscarPorId(@PathVariable Long id){
 
         return ResponseEntity.ok(pedidoService.buscarPorId(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> Salvar(@RequestBody Pedido pedido){
+        pedidoService.salvar(pedido);
+
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pedido.getId()).toUri()).build();
     }
 }

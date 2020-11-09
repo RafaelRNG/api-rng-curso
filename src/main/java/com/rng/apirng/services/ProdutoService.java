@@ -22,6 +22,10 @@ public class ProdutoService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    public Produto buscarPorId(Long id) {
+        return produtoRepository.findById(id).get();
+    }
+
     public Page<Produto> search(String nome, List<Long> ids, Integer page, Integer linesPerPage, String orderBy, String direction){
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 
