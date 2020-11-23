@@ -13,7 +13,6 @@ public class URL {
         try{
             return URLDecoder.decode(string, "UTF-8");
         } catch(UnsupportedEncodingException e){
-//            e.printStackTrace();
             return "";
         }
     }
