@@ -1,6 +1,8 @@
 package com.rng.apirng.config;
 
 import com.rng.apirng.services.DBService;
+import com.rng.apirng.services.EmailService;
+import com.rng.apirng.services.MockEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,5 +21,10 @@ public class TestConfig {
     public Boolean instantiateDatabase() throws ParseException {
         dbService.instantiateTestDatabase();
         return true;
+    }
+
+    @Bean
+    public EmailService emailService(){
+        return new MockEmailService();
     }
 }
