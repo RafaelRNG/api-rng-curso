@@ -90,10 +90,10 @@ public class DBService {
         Cidade c2 = new Cidade(null, "São Paulo", est2);
         Cidade c3 = new Cidade(null, "Campinas", est2);
 
-        Cliente cli1 = new Cliente(null, "Rafael Neves Gomila", "rafael@hotmail.com", "36378912377",  TipoCliente.PESSOAFISICA);
+        Cliente cli1 = new Cliente(null, "Rafael Neves Gomila", "rafael.gomila@hotmail.com", "36378912377",  TipoCliente.PESSOAFISICA);
         cli1.setTelefones(Arrays.asList("27363323", "93838393"));
 
-        Cliente cli2 = new Cliente(null, "Maria Silva", "maria@gmail.com", "345345353534534", TipoCliente.PESSOAFISICA);
+        Cliente cli2 = new Cliente(null, "Luci ", "luciene.rosa111@gmail.com", "3453423445353534534", TipoCliente.PESSOAFISICA);
 
         Endereco e1 = new Endereco(null, "rua Flores", "300", "apto 203", "jardim", "38220834", cli1, c1);
         Endereco e2 = new Endereco(null, "Avenida Matos", "105", "sala 800", "Centro", "38777012", cli1, c2);
