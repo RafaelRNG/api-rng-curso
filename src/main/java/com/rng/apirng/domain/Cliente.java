@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Entity
+@Table(name = "tb_cliente")
 public class Cliente implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +23,9 @@ public class Cliente implements Serializable {
     private String cpfOuCnpj;
     private Integer tipoCliente;
 
+    @JsonIgnore
+    private String senha;
+
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Endereco> enderecos = new ArrayList<Endereco>();
 
@@ -35,12 +39,13 @@ public class Cliente implements Serializable {
 
     public Cliente(){}
 
-    public Cliente(Long id, String nome, String email, String cpfOuCnpj, TipoCliente tipoCliente){
+    public Cliente(Long id, String nome, String email, String cpfOuCnpj, TipoCliente tipoCliente, String senha){
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.cpfOuCnpj = cpfOuCnpj;
         this.tipoCliente = tipoCliente.getCodigo();
+        this.senha = senha;
     }
 
     public Long getId() {
@@ -81,6 +86,14 @@ public class Cliente implements Serializable {
 
     public void setTipoCliente(TipoCliente tipoCliente) {
         this.tipoCliente = tipoCliente.getCodigo();
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     public List<Endereco> getEnderecos() {

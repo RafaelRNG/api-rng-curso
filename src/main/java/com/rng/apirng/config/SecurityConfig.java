@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,17 +23,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private Environment environment;
 
-    private static final String[] PUBLIC_MATCHERS = {
-            "/h2-console/**"};
-
-    private static final String[] PUBLIC_MATCHERS_GET = {
-            "/produtos/**",
-            "/categorias/**" };
-
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws  Exception {
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
 
-        if(Arrays.asList(environment.getActiveProfiles()).contains("test")){
+        if (Arrays.asList(environment.getActiveProfiles()).contains("test")) {
             httpSecurity.headers().frameOptions().disable();
         }
 
@@ -40,9 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET)
+                .antMatchers(HttpMethod.GET, "/produtos/**", "/categorias/**")
                 .permitAll()
-                .antMatchers(PUBLIC_MATCHERS)
+                .antMatchers("/h2-console/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
@@ -55,5 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

@@ -5,6 +5,7 @@ import com.rng.apirng.domain.enums.EstadoPagamento;
 import com.rng.apirng.domain.enums.TipoCliente;
 import com.rng.apirng.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -41,6 +42,9 @@ public class DBService {
 
     @Autowired
     private ItemPedidoRepository itemPedidoRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void instantiateTestDatabase() throws ParseException {
         Categoria cat1 = new Categoria(null, "Informatica");
@@ -90,10 +94,10 @@ public class DBService {
         Cidade c2 = new Cidade(null, "São Paulo", est2);
         Cidade c3 = new Cidade(null, "Campinas", est2);
 
-        Cliente cli1 = new Cliente(null, "Rafael Neves Gomila", "rafael.gomila@hotmail.com", "36378912377",  TipoCliente.PESSOAFISICA);
+        Cliente cli1 = new Cliente(null, "Rafael Neves Gomila", "rafael.gomila@hotmail.com", "36378912377",  TipoCliente.PESSOAFISICA, bCryptPasswordEncoder.encode("123"));
         cli1.setTelefones(Arrays.asList("27363323", "93838393"));
 
-        Cliente cli2 = new Cliente(null, "Luci ", "luciene.rosa111@gmail.com", "3453423445353534534", TipoCliente.PESSOAFISICA);
+        Cliente cli2 = new Cliente(null, "Luci ", "luciene.rosa111@gmail.com", "3453423445353534534", TipoCliente.PESSOAFISICA, bCryptPasswordEncoder.encode("123"));
 
         Endereco e1 = new Endereco(null, "rua Flores", "300", "apto 203", "jardim", "38220834", cli1, c1);
         Endereco e2 = new Endereco(null, "Avenida Matos", "105", "sala 800", "Centro", "38777012", cli1, c2);
