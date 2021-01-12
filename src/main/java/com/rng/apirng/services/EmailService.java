@@ -11,7 +11,7 @@ public interface EmailService {
 
     void sendEmail(SimpleMailMessage simpleMailMessage);
 
-    void sendOrderConfirmationHtmlEmail(Pedido pedido);
-
-    void sendHtmlEmail(MimeMessage mimeMessage);
+//    void sendOrderConfirmationHtmlEmail(Pedido pedido);
+//
+//    void sendHtmlEmail(MimeMessage mimeMessage);
 }
