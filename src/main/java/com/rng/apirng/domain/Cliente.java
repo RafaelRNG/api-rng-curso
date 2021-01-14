@@ -1,11 +1,13 @@
 package com.rng.apirng.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rng.apirng.domain.enums.Perfil;
 import com.rng.apirng.domain.enums.TipoCliente;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "tb_cliente")
@@ -33,11 +35,17 @@ public class Cliente implements Serializable {
     @CollectionTable(name = "TELEFONE")
     private List<String> telefones = new ArrayList<>();
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "PERFIS")
+    private Set<Integer> perfis = new HashSet<>();
+
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos = new ArrayList<Pedido>();
 
-    public Cliente(){}
+    public Cliente(){
+        addPerfil(Perfil.CLIENTE);
+    }
 
     public Cliente(Long id, String nome, String email, String cpfOuCnpj, TipoCliente tipoCliente, String senha){
         this.id = id;
@@ -46,6 +54,7 @@ public class Cliente implements Serializable {
         this.cpfOuCnpj = cpfOuCnpj;
         this.tipoCliente = tipoCliente.getCodigo();
         this.senha = senha;
+        addPerfil(Perfil.CLIENTE);
     }
 
     public Long getId() {
@@ -110,6 +119,15 @@ public class Cliente implements Serializable {
 
     public void setTelefones(List<String> telefones) {
         this.telefones = telefones;
+    }
+
+    public Set<Perfil> getPerfis() {
+
+        return this.perfis.stream().map(perfil -> Perfil.toEnum(perfil)).collect(Collectors.toSet());
+    }
+
+    public void addPerfil(Perfil perfil){
+        this.perfis.add(perfil.getCodigo());
     }
 
     public List<Pedido> getPedidos() {

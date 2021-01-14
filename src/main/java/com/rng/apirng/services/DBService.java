@@ -2,6 +2,7 @@ package com.rng.apirng.services;
 
 import com.rng.apirng.domain.*;
 import com.rng.apirng.domain.enums.EstadoPagamento;
+import com.rng.apirng.domain.enums.Perfil;
 import com.rng.apirng.domain.enums.TipoCliente;
 import com.rng.apirng.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,7 @@ public class DBService {
         cli1.setTelefones(Arrays.asList("27363323", "93838393"));
 
         Cliente cli2 = new Cliente(null, "Luci ", "luciene.rosa111@gmail.com", "3453423445353534534", TipoCliente.PESSOAFISICA, bCryptPasswordEncoder.encode("123"));
+        cli2.addPerfil(Perfil.ADMIN);
 
         Endereco e1 = new Endereco(null, "rua Flores", "300", "apto 203", "jardim", "38220834", cli1, c1);
         Endereco e2 = new Endereco(null, "Avenida Matos", "105", "sala 800", "Centro", "38777012", cli1, c2);
