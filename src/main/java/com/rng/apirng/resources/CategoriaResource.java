@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.rng.apirng.domain.Categoria;
@@ -54,6 +55,7 @@ public class CategoriaResource {
 		return ResponseEntity.ok(categoriaDTO);
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> salvar(@Valid @RequestBody CategoriaDTO categoriaDTO){
 		Categoria categoria = categoriaService.fromDTO(categoriaDTO);
@@ -62,6 +64,7 @@ public class CategoriaResource {
 		return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId()).toUri()).build();
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<?> alterar(@PathVariable Long id, @Valid @RequestBody CategoriaDTO categoriaDTO){
 		Categoria categoria = categoriaService.fromDTO(categoriaDTO);
@@ -70,6 +73,7 @@ public class CategoriaResource {
 		return ResponseEntity.noContent().build();
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<?> deletar(@PathVariable Long id){
 
