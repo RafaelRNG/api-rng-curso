@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.rng.apirng.services.exception.AuthorizationException;
 import com.rng.apirng.services.exception.DataIntegrityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +43,12 @@ public class ResourceExceptionHandler {
 		}
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<StandardError> authentication(AuthorizationException e){
+		StandardError standardError = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage(), new Date());
+
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(standardError);
 	}
 }

@@ -3,12 +3,15 @@ package com.rng.apirng.services;
 import com.rng.apirng.domain.Cidade;
 import com.rng.apirng.domain.Cliente;
 import com.rng.apirng.domain.Endereco;
+import com.rng.apirng.domain.enums.Perfil;
 import com.rng.apirng.domain.enums.TipoCliente;
 import com.rng.apirng.dto.ClienteDTO;
 import com.rng.apirng.dto.ClienteNewDTO;
 import com.rng.apirng.repositories.CidadeRepository;
 import com.rng.apirng.repositories.ClienteRepository;
 import com.rng.apirng.repositories.EnderecoRepository;
+import com.rng.apirng.security.UserSS;
+import com.rng.apirng.services.exception.AuthorizationException;
 import com.rng.apirng.services.exception.DataIntegrityException;
 import com.rng.apirng.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +58,12 @@ public class ClienteService {
     }
 
     public Cliente buscarPorId(Long id){
+
+        UserSS user = UserService.authenticated();
+
+        if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())){
+            throw new AuthorizationException("Acesso negado");
+        }
 
         Optional<Cliente> cliente = clienteRepository.findById(id);
 
