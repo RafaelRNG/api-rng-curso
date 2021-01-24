@@ -1,5 +1,6 @@
 package com.rng.apirng.services;
 
+import com.rng.apirng.domain.Cliente;
 import com.rng.apirng.domain.ItemPedido;
 import com.rng.apirng.domain.PagamentoComBoleto;
 import com.rng.apirng.domain.Pedido;
@@ -7,8 +8,13 @@ import com.rng.apirng.domain.enums.EstadoPagamento;
 import com.rng.apirng.repositories.ItemPedidoRepository;
 import com.rng.apirng.repositories.PagamentoRepository;
 import com.rng.apirng.repositories.PedidoRepository;
+import com.rng.apirng.security.UserSS;
+import com.rng.apirng.services.exception.AuthorizationException;
 import com.rng.apirng.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -69,5 +75,18 @@ public class PedidoService {
 
         emailService.sendOrderConfirmationEmail(pedido);
         return pedido;
+    }
+
+    public Page<Pedido> paginagion(Integer page, Integer linesPerPage, String orderBy, String direction){
+
+        UserSS userSS = UserService.authenticated();
+
+        if(userSS == null){
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+        Cliente cliente = clienteService.buscarPorId(userSS.getId());
+        return pedidoRepository.findByCliente(cliente, pageRequest);
     }
 }
