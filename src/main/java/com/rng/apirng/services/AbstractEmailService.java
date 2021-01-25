@@ -1,5 +1,6 @@
 package com.rng.apirng.services;
 
+import com.rng.apirng.domain.Cliente;
 import com.rng.apirng.domain.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +43,25 @@ public abstract class AbstractEmailService implements EmailService {
         return sm;
     }
 
-//    protected String htmlFromTemplatePedido(Pedido pedido) {
+    @Override
+    public void sendNewPasswordEmail(Cliente cliente, String newPass) {
+        SimpleMailMessage sm = prepareNewPasswordEmail(cliente, newPass);
+        sendEmail(sm);
+    }
+
+    protected SimpleMailMessage prepareNewPasswordEmail(Cliente cliente, String newPass){
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+
+        simpleMailMessage.setTo(cliente.getEmail());
+        simpleMailMessage.setFrom(sender);
+        simpleMailMessage.setSubject("Solicitação de nova senha");
+        simpleMailMessage.setSentDate(new Date(System.currentTimeMillis()));
+        simpleMailMessage.setText("Nova senha: " + newPass);
+
+        return simpleMailMessage;
+    }
+
+    //    protected String htmlFromTemplatePedido(Pedido pedido) {
 //        Context context = new Context();
 //        context.setVariable("pedido", pedido);
 //        return templateEngine.process("email/confirmacaoPedido", context);
