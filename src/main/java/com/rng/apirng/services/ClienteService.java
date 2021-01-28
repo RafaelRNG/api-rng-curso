@@ -23,7 +23,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +45,9 @@ public class ClienteService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private S3Service s3Service;
 
     public List<ClienteDTO> buscarTodos(){
         List<Cliente> clientes = clienteRepository.findAll();
@@ -99,7 +104,7 @@ public class ClienteService {
         return new Cliente(clienteDTO.getId(), clienteDTO.getNome(), clienteDTO.getEmail(), cliente.get().getCpfOuCnpj(), cliente.get().getTipoCliente(), null);
     }
 
-    public Cliente fromDTO(ClienteNewDTO clienteNewDTO){
+    public Cliente fromDTO(ClienteNewDTO clienteNewDTO) {
 
         Optional<Cidade> cidade = cidadeRepository.findById(clienteNewDTO.getCidadeId());
 
@@ -111,5 +116,9 @@ public class ClienteService {
         cliente.setTelefones(Arrays.asList(clienteNewDTO.getTelefone1(), clienteNewDTO.getTelefone2(), clienteNewDTO.getTelefone3()));
 
         return cliente;
+    }
+
+    public URI uploadProfilePicture(MultipartFile multipartFile) {
+        return s3Service.uploadFile(multipartFile);
     }
 }
