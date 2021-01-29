@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/produtos/**", "/categorias/**")
                 .permitAll()
-                .antMatchers(HttpMethod.POST, "/clientes", "/clientes/picture", "/auth/forgot/**")
+                .antMatchers(HttpMethod.POST, "/clientes", "/auth/forgot/**")
                 .permitAll()
                 .antMatchers("/h2-console/**")
                 .permitAll()

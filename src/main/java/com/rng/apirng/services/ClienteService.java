@@ -1,5 +1,21 @@
 package com.rng.apirng.services;
 
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.rng.apirng.domain.Cidade;
 import com.rng.apirng.domain.Cliente;
 import com.rng.apirng.domain.Endereco;
@@ -14,111 +30,114 @@ import com.rng.apirng.security.UserSS;
 import com.rng.apirng.services.exception.AuthorizationException;
 import com.rng.apirng.services.exception.DataIntegrityException;
 import com.rng.apirng.services.exception.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ClienteService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+	@Autowired
+	private ClienteRepository clienteRepository;
 
-    @Autowired
-    private CidadeRepository cidadeRepository;
+	@Autowired
+	private CidadeRepository cidadeRepository;
 
-    @Autowired
-    private EnderecoRepository enderecoRepository;
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    private S3Service s3Service;
+	@Autowired
+	private S3Service s3Service;
 
-    public List<ClienteDTO> buscarTodos(){
-        List<Cliente> clientes = clienteRepository.findAll();
-        List<ClienteDTO> clientesDTO = clientes.stream().map(cliente -> new ClienteDTO(cliente)).collect(Collectors.toList());
+	public List<ClienteDTO> buscarTodos() {
+		List<Cliente> clientes = clienteRepository.findAll();
+		List<ClienteDTO> clientesDTO = clientes.stream().map(cliente -> new ClienteDTO(cliente))
+				.collect(Collectors.toList());
 
-        return clientesDTO;
-    }
+		return clientesDTO;
+	}
 
-    public Page<Cliente> buscarComPaginacao(Integer page, Integer linesPerPage, String orderBy, String direction){
-        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+	public Page<Cliente> buscarComPaginacao(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 
-        return clienteRepository.findAll(pageRequest);
-    }
+		return clienteRepository.findAll(pageRequest);
+	}
 
-    public Cliente buscarPorId(Long id){
+	public Cliente buscarPorId(Long id) {
 
-        UserSS user = UserService.authenticated();
+		UserSS user = UserService.authenticated();
 
-        if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())){
-            throw new AuthorizationException("Acesso negado");
-        }
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
 
-        Optional<Cliente> cliente = clienteRepository.findById(id);
+		Optional<Cliente> cliente = clienteRepository.findById(id);
 
-        return cliente.orElseThrow(() -> new ObjectNotFoundException("Objeto não enconstrado! ID: " + id));
-    }
+		return cliente.orElseThrow(() -> new ObjectNotFoundException("Objeto não enconstrado! ID: " + id));
+	}
 
-    @Transactional
-    public Cliente salvar(Cliente cliente){
-        enderecoRepository.saveAll(cliente.getEnderecos());
-        return clienteRepository.save(cliente);
-    }
+	@Transactional
+	public Cliente salvar(Cliente cliente) {
+		enderecoRepository.saveAll(cliente.getEnderecos());
+		return clienteRepository.save(cliente);
+	}
 
-    public Cliente alterar(Long id, Cliente novoCliente){
-        Optional<Cliente> velhoCliente = clienteRepository.findById(id);
+	public Cliente alterar(Long id, Cliente novoCliente) {
+		Optional<Cliente> velhoCliente = clienteRepository.findById(id);
 
-        novoCliente.setId(velhoCliente.get().getId());
-        clienteRepository.save(novoCliente);
-        return novoCliente;
-    }
+		novoCliente.setId(velhoCliente.get().getId());
+		clienteRepository.save(novoCliente);
+		return novoCliente;
+	}
 
-    public void deletar(Long id) {
-        try{
-            clienteRepository.deleteById(id);
-        }
-        catch(DataIntegrityViolationException e){
-            throw new DataIntegrityException("Não é pissível excluir porque há entidades relacionadas");
-        }
-    }
+	public void deletar(Long id) {
+		try {
+			clienteRepository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é pissível excluir porque há entidades relacionadas");
+		}
+	}
 
-    public Cliente fromDTO(Long id, ClienteDTO clienteDTO){
-        Optional<Cliente> cliente = clienteRepository.findById(id);
+	public Cliente fromDTO(Long id, ClienteDTO clienteDTO) {
+		Optional<Cliente> cliente = clienteRepository.findById(id);
 
-        return new Cliente(clienteDTO.getId(), clienteDTO.getNome(), clienteDTO.getEmail(), cliente.get().getCpfOuCnpj(), cliente.get().getTipoCliente(), null);
-    }
+		return new Cliente(clienteDTO.getId(), clienteDTO.getNome(), clienteDTO.getEmail(),
+				cliente.get().getCpfOuCnpj(), cliente.get().getTipoCliente(), null);
+	}
 
-    public Cliente fromDTO(ClienteNewDTO clienteNewDTO) {
+	public Cliente fromDTO(ClienteNewDTO clienteNewDTO) {
 
-        Optional<Cidade> cidade = cidadeRepository.findById(clienteNewDTO.getCidadeId());
+		Optional<Cidade> cidade = cidadeRepository.findById(clienteNewDTO.getCidadeId());
 
-        Cliente cliente = new Cliente(null, clienteNewDTO.getNome(), clienteNewDTO.getEmail(), clienteNewDTO.getCpfOuCnpj(), TipoCliente.toEnum(clienteNewDTO.getTipoCliente()), bCryptPasswordEncoder.encode(clienteNewDTO.getSenha()));
-        Endereco endereco = new Endereco(null, clienteNewDTO.getLogradouro(), clienteNewDTO.getNumero(), clienteNewDTO.getComplemento(), clienteNewDTO.getBairro(), clienteNewDTO.getCep(), cliente, cidade.get());
+		Cliente cliente = new Cliente(null, clienteNewDTO.getNome(), clienteNewDTO.getEmail(),
+				clienteNewDTO.getCpfOuCnpj(), TipoCliente.toEnum(clienteNewDTO.getTipoCliente()),
+				bCryptPasswordEncoder.encode(clienteNewDTO.getSenha()));
+		Endereco endereco = new Endereco(null, clienteNewDTO.getLogradouro(), clienteNewDTO.getNumero(),
+				clienteNewDTO.getComplemento(), clienteNewDTO.getBairro(), clienteNewDTO.getCep(), cliente,
+				cidade.get());
 
-        cliente.setEnderecos(Arrays.asList(endereco));
+		cliente.setEnderecos(Arrays.asList(endereco));
 
-        cliente.setTelefones(Arrays.asList(clienteNewDTO.getTelefone1(), clienteNewDTO.getTelefone2(), clienteNewDTO.getTelefone3()));
+		cliente.setTelefones(Arrays.asList(clienteNewDTO.getTelefone1(), clienteNewDTO.getTelefone2(),
+				clienteNewDTO.getTelefone3()));
 
-        return cliente;
-    }
+		return cliente;
+	}
 
-    public URI uploadProfilePicture(MultipartFile multipartFile) {
-        return s3Service.uploadFile(multipartFile);
-    }
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+
+		UserSS userSS = (UserSS) UserService.authenticated();
+
+		if (userSS == null) {
+			throw new AuthorizationException("Acesso negado!");
+		}
+		
+		URI uri = s3Service.uploadFile(multipartFile);
+		
+		Cliente cliente = this.buscarPorId(userSS.getId());
+		cliente.setImageUrl(uri.toString());
+		
+		clienteRepository.save(cliente);
+		return uri;
+	}
 }

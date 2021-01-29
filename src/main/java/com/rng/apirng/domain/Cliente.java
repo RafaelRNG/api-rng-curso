@@ -42,6 +42,8 @@ public class Cliente implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos = new ArrayList<Pedido>();
+    
+    private String imageUrl;
 
     public Cliente(){
         addPerfil(Perfil.CLIENTE);
@@ -137,8 +139,16 @@ public class Cliente implements Serializable {
     public void setPedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;
     }
+    
+    public String getImageUrl() {
+		return imageUrl;
+	}
 
-    @Override
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Cliente)) return false;
