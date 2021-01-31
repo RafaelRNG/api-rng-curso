@@ -47,7 +47,7 @@ public class S3Service {
             LOGGER.info("Iniciando upload...");
             amazonS3.putObject(bucketName, fileName, is, meta);
             LOGGER.info("Upload finalizando...");
-
+            
             return amazonS3.getUrl(bucketName, fileName).toURI();
         } catch(URISyntaxException e) {
             throw new FileException("Erro ao converter URL para URI");
