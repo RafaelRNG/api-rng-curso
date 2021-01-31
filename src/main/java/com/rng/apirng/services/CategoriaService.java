@@ -3,18 +3,17 @@ package com.rng.apirng.services;
 import java.util.List;
 import java.util.Optional;
 
-import com.rng.apirng.dto.CategoriaDTO;
-import com.rng.apirng.services.exception.DataIntegrityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.rng.apirng.domain.Categoria;
+import com.rng.apirng.dto.CategoriaDTO;
 import com.rng.apirng.repositories.CategoriaRepository;
+import com.rng.apirng.services.exception.DataIntegrityException;
 import com.rng.apirng.services.exception.ObjectNotFoundException;
 
 @Service
