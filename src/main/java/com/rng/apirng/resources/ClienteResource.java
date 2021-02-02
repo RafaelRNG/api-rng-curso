@@ -50,6 +50,11 @@ public class ClienteResource {
 
            return ResponseEntity.ok(clientes);
     }
+    
+    @GetMapping(path = "/email")
+    public ResponseEntity<Cliente> buscarPorEmail(@RequestParam(value="valor") String email){
+    	return ResponseEntity.ok(clienteService.buscarPorEmail(email));
+    }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Cliente> buscarPorId(@PathVariable Long id){

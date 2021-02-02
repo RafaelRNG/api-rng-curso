@@ -86,6 +86,16 @@ public class ClienteService {
 
 		return cliente.orElseThrow(() -> new ObjectNotFoundException("Objeto não enconstrado! ID: " + id));
 	}
+	
+	public Cliente buscarPorEmail(String email) {
+		UserSS userSS = UserService.authenticated();
+		
+		if(userSS == null || !userSS.hasRole(Perfil.ADMIN) && !email.equals(userSS.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		return clienteRepository.findByEmail(email);
+	}
 
 	@Transactional
 	public Cliente salvar(Cliente cliente) {
