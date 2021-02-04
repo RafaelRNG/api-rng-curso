@@ -1,24 +1,31 @@
 package com.rng.apirng.resources.exception;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
-import java.util.Date;
 
 public class StandardError implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private Long timestamp;
 	private Integer status;
+	private String error;
 	private String msg;
-
-	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
-	private Date date;
-
-	public StandardError(Integer status, String msg, Date date){
+	private String path;
+	
+	public StandardError(Long timestamp, Integer status, String error, String msg, String path) {
+		this.timestamp = timestamp;
 		this.status = status;
+		this.error = error;
 		this.msg = msg;
-		this.date = date;
+		this.path = path;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public Integer getStatus() {
@@ -29,6 +36,14 @@ public class StandardError implements Serializable {
 		this.status = status;
 	}
 
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
 	public String getMsg() {
 		return msg;
 	}
@@ -37,11 +52,11 @@ public class StandardError implements Serializable {
 		this.msg = msg;
 	}
 
-	public Date getDate() {
-		return date;
+	public String getPath() {
+		return path;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+	public void setPath(String path) {
+		this.path = path;
+	}	
 }

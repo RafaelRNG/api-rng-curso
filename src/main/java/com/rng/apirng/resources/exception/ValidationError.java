@@ -1,7 +1,6 @@
 package com.rng.apirng.resources.exception;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ValidationError extends StandardError {
@@ -10,11 +9,13 @@ public class ValidationError extends StandardError {
 
     private List<FieldMessage> errors = new ArrayList<FieldMessage>();
 
-    public ValidationError(Integer status, String msg, Date date){
-        super(status, msg, date);
-    }
+    
+    
+    public ValidationError(Long timestamp, Integer status, String error, String msg, String path) {
+		super(timestamp, status, error, msg, path);
+	}
 
-    public List<FieldMessage> getErrors() {
+	public List<FieldMessage> getErrors() {
         return errors;
     }
 
